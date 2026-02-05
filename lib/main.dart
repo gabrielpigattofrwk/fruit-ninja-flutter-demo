@@ -195,6 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void gameOver() {
     physicsTimer?.cancel();
     spawnTimer?.cancel();
+    sliceTrailTimer?.cancel();
 
     showDialog(
       context: context,
