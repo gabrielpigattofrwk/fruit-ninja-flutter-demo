@@ -1,7 +1,9 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+
+import 'dart:math';
+import 'dart:async';
+
+// Boilerplate
 
 class Fruit {
   String emoji;
@@ -16,14 +18,14 @@ class Fruit {
   });
 
   void updatePhysics(Duration deltaTime) {
-    // Velocity
+    // Vel
     double deltaTimeSeconds = deltaTime.inMilliseconds / 1000;
 
     x += velocityX * deltaTimeSeconds; // pos = vel * tempo
     y += velocityY * deltaTimeSeconds;
 
     // Gravity
-    double gravity = 980.0; // px/s^2
+    double gravity = 1000;
 
     velocityY += gravity * deltaTimeSeconds; // vel = acel * tempo
   }
@@ -79,6 +81,8 @@ class SlicePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
+// Boilerplate
+
 void main() {
   runApp(const MyApp());
 }
@@ -88,42 +92,38 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+    return MaterialApp(title: 'Flutter Demo', home: const MyHomePage());
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Timer? gameTimer, spawnTimer, sliceTrailTimer;
-  List<Fruit> fruits = [];
-  List<Offset> sliceTrail = [];
   int score = 0, lives = 3;
-
-  final frames = Duration(milliseconds: 16); // 16 / 1000 = +- 60 rep/s
+  List<Fruit> fruits = [];
+  Timer? physicsTimer, spawnTimer, sliceTrailTimer;
+  List<Offset> sliceTrail = [];
 
   @override
   void initState() {
-    sliceTrailTimer = Timer.periodic(
-      Duration(milliseconds: 12),
-      (_) => removeTrail(),
-    );
-
-    gameTimer = Timer.periodic(frames, (_) => updateFruits());
-
     spawnTimer = Timer.periodic(
       Duration(milliseconds: 1000),
-      (_) => spawnFruit(),
+      (e) => spawnFruit(),
+    );
+
+    physicsTimer = Timer.periodic(
+      Duration(milliseconds: 16),
+      (e) => updateFruits(),
+    );
+
+    sliceTrailTimer = Timer.periodic(
+      Duration(milliseconds: 12),
+      (e) => removeTrail(),
     );
 
     super.initState();
@@ -131,8 +131,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    gameTimer?.cancel();
     spawnTimer?.cancel();
+    physicsTimer?.cancel();
+    sliceTrailTimer?.cancel();
 
     super.dispose();
   }
@@ -146,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void updateFruits() {
     setState(() {
       for (var fruit in fruits) {
-        fruit.updatePhysics(frames);
+        fruit.updatePhysics(Duration(milliseconds: 16));
       }
 
       fruits.removeWhere((fruit) {
@@ -192,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void gameOver() {
-    gameTimer?.cancel();
+    physicsTimer?.cancel();
     spawnTimer?.cancel();
 
     showDialog(
