@@ -50,8 +50,7 @@ class Fruit {
 
     final startX = Random().nextDouble() * size.width;
     final startY = size.height;
-    final velocityX =
-        (Random().nextDouble() - 0.5) * velocityXRange;
+    final velocityX = (Random().nextDouble() - 0.5) * velocityXRange;
     final velocityY = minVelocityY - Random().nextDouble() * velocityYRange;
 
     return Fruit(
@@ -115,7 +114,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    sliceTrailTimer = Timer.periodic(Duration(milliseconds: 12), (_) => removeTrail());
+    sliceTrailTimer = Timer.periodic(
+      Duration(milliseconds: 12),
+      (_) => removeTrail(),
+    );
 
     gameTimer = Timer.periodic(frames, (_) => updateFruits());
 
@@ -150,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
       fruits.removeWhere((fruit) {
         if (fruit.isOffScreen(MediaQuery.of(context).size)) {
           lives--;
-          
+
           if (lives <= 0) {
             gameOver();
           }
@@ -210,12 +212,8 @@ class _MyHomePageState extends State<MyHomePage> {
         onHover: (event) => slice(event.localPosition),
         child: Stack(
           children: [
-            if (sliceTrail.isNotEmpty)
-                  CustomPaint(
-                    painter: SlicePainter(sliceTrail),
-                    size: Size.infinite,
-                  ),
-        
+            CustomPaint(painter: SlicePainter(sliceTrail), size: Size.infinite),
+
             for (var fruit in fruits)
               Positioned(
                 left: fruit.x,
