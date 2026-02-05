@@ -216,13 +216,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     size: Size.infinite,
                   ),
         
-            ...fruits.map(
-              (fruit) => Positioned(
-                left: fruit.x - 30,
-                top: fruit.y - 30,
+            for (var fruit in fruits)
+              Positioned(
+                left: fruit.x,
+                top: fruit.y,
                 child: Text(fruit.emoji, style: TextStyle(fontSize: 60)),
               ),
-            ),
 
             Positioned(top: 20, left: 50, child: Text('Score $score')),
             Positioned(top: 20, right: 50, child: Text('Vidas $lives')),
